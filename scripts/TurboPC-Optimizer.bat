@@ -57,11 +57,11 @@ for /d %%p in ("%TEMP%\*") do rmdir /s /q "%%p" >nul 2>&1
 powershell -NoProfile -Command "if (Test-Path '$env:LOCALAPPDATA\CrashDumps') { Remove-Item '$env:LOCALAPPDATA\CrashDumps\*' -Recurse -Force -ErrorAction SilentlyContinue }; if (Test-Path '$env:LOCALAPPDATA\D3DSCache') { Remove-Item '$env:LOCALAPPDATA\D3DSCache\*' -Recurse -Force -ErrorAction SilentlyContinue }" >nul 2>&1
 echo       -> Lixo temporario do perfil de usuario limpo.
 
-:: ETAPA 3: Caches de Navegadores Web (Preserva senhas, favoritos e historico)
+:: ETAPA 3: Caches de Navegadores Web (Algoritmo Universal de Deteccao)
 echo.
-echo [3/9] Limpando caches pesados de navegadores (Chrome, Edge, Brave, Opera, Firefox)...
-powershell -NoProfile -Command "$paths = @('$env:LOCALAPPDATA\Microsoft\Edge\User Data\Default\Cache', '$env:LOCALAPPDATA\Microsoft\Edge\User Data\Default\Code Cache', '$env:LOCALAPPDATA\Google\Chrome\User Data\Default\Cache', '$env:LOCALAPPDATA\Google\Chrome\User Data\Default\Code Cache', '$env:LOCALAPPDATA\BraveSoftware\Brave-Browser\User Data\Default\Cache', '$env:APPDATA\Opera Software\Opera Stable\Cache', '$env:APPDATA\Opera Software\Opera GX Stable\Cache', '$env:LOCALAPPDATA\Mozilla\Firefox\Profiles'); foreach ($p in $paths) { if (Test-Path $p) { Remove-Item \"$p\*\" -Recurse -Force -ErrorAction SilentlyContinue } }" >nul 2>&1
-echo       -> Caches de navegacao liberados com integridade garantida.
+echo [3/9] Detectando e limpando caches de QUALQUER navegador instalado e seus perfis...
+powershell -NoProfile -Command "$patterns = @('$env:LOCALAPPDATA\*\User Data\*\Cache', '$env:LOCALAPPDATA\*\*\User Data\*\Cache', '$env:LOCALAPPDATA\*\User Data\*\Code Cache', '$env:LOCALAPPDATA\*\*\User Data\*\Code Cache', '$env:LOCALAPPDATA\*\User Data\*\GPUCache', '$env:LOCALAPPDATA\*\*\User Data\*\GPUCache', '$env:LOCALAPPDATA\Opera Software\*\Cache', '$env:APPDATA\Opera Software\*\Cache', '$env:LOCALAPPDATA\*\Profiles\*\cache2', '$env:LOCALAPPDATA\*\*\Profiles\*\cache2', '$env:LOCALAPPDATA\*\Profiles\*\startupCache', '$env:LOCALAPPDATA\*\*\Profiles\*\startupCache'); $dirs = Resolve-Path $patterns -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Path -Unique; foreach ($d in $dirs) { Remove-Item \"$d\*\" -Recurse -Force -ErrorAction SilentlyContinue }" >nul 2>&1
+echo       -> Caches de todos os perfis e navegadores limpos com integridade garantida.
 
 :: ETAPA 4: Caches de Jogos, Comunicacao e Shader Caches
 echo.

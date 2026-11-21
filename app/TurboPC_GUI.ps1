@@ -211,18 +211,28 @@ $btnStart.Add_Click({
         LogMsg(" -> Temporários limpos.")
     }
 
-    if ($chkBrowsers.Checked) {
+        if ($chkBrowsers.Checked) {
         $progBar.Value = 40
-        LogMsg("[3/8] Limpando caches de navegadores...")
-        $paths = @(
-            "$env:LOCALAPPDATA\Microsoft\Edge\User Data\Default\Cache",
-            "$env:LOCALAPPDATA\Google\Chrome\User Data\Default\Cache",
-            "$env:LOCALAPPDATA\BraveSoftware\Brave-Browser\User Data\Default\Cache"
+        LogMsg("[3/8] Detectando e limpando caches de todos os navegadores e perfis...")
+        $patterns = @(
+            "$env:LOCALAPPDATA\*\User Data\*\Cache",
+            "$env:LOCALAPPDATA\*\*\User Data\*\Cache",
+            "$env:LOCALAPPDATA\*\User Data\*\Code Cache",
+            "$env:LOCALAPPDATA\*\*\User Data\*\Code Cache",
+            "$env:LOCALAPPDATA\*\User Data\*\GPUCache",
+            "$env:LOCALAPPDATA\*\*\User Data\*\GPUCache",
+            "$env:LOCALAPPDATA\Opera Software\*\Cache",
+            "$env:APPDATA\Opera Software\*\Cache",
+            "$env:LOCALAPPDATA\*\Profiles\*\cache2",
+            "$env:LOCALAPPDATA\*\*\Profiles\*\cache2",
+            "$env:LOCALAPPDATA\*\Profiles\*\startupCache",
+            "$env:LOCALAPPDATA\*\*\Profiles\*\startupCache"
         )
-        foreach ($p in $paths) {
-            if (Test-Path $p) { Remove-Item "$p\*" -Recurse -Force -ErrorAction SilentlyContinue }
+        $dirs = Resolve-Path $patterns -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Path -Unique
+        foreach ($d in $dirs) {
+            Remove-Item "$d\*" -Recurse -Force -ErrorAction SilentlyContinue
         }
-        LogMsg(" -> Caches de navegação liberados.")
+        LogMsg(" -> " + $dirs.Count + " pastas de cache de navegadores otimizadas com sucesso.")
     }
 
     if ($chkGames.Checked) {
